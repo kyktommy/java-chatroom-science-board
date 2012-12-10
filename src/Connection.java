@@ -13,6 +13,10 @@ import java.util.ArrayList;
 
 public class Connection implements Runnable {
 	
+	// Constants
+	public final String TOPIC_FILE = "topics.txt";
+	
+	// Variable
 	User user;
 	Socket socket;
 	ChatServer chatServer;
@@ -32,7 +36,7 @@ public class Connection implements Runnable {
 	
 	public void getTopicsFromFile(){
 		try{
-			BufferedReader br = new BufferedReader(new FileReader("topics.txt"));
+			BufferedReader br = new BufferedReader(new FileReader(TOPIC_FILE));
 			String topic = "";
 			while((topic = br.readLine()) != null) {
 				topics.add(topic);
@@ -43,9 +47,12 @@ public class Connection implements Runnable {
 	}
 	
 	public void addTopicToFile(String topic) {
+		if(topics.contains(topic)) return;
 		try{
-			BufferedWriter br = new BufferedWriter(new FileWriter("topics.txt"));
+			BufferedWriter br = new BufferedWriter(new FileWriter(TOPIC_FILE, true));
 			br.write(topic);
+			br.newLine();
+			br.close();
 		} catch (IOException e) {
 			
 		}
@@ -103,6 +110,10 @@ public class Connection implements Runnable {
 		else if( cmd == CMDList.SendMessage ) {
 			String msg = (String)command.getObject();
 			parseMessage(msg);
+		}
+		else if( cmd == CMDList.CreateTopic) {
+			String topic = (String)command.getObject();
+			addTopicToFile(topic);
 		}
 		else if( cmd == CMDList.Exit ) {
 			exit = true;

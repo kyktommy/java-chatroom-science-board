@@ -64,6 +64,11 @@ public class ChatClient {
 					} 
 					else if(msg.indexOf("/ct") == 0) {
 						// Create topic
+						// get topic name
+						String topic = msg.split(" ")[1];
+						Command cmd = new Command(CMDList.CreateTopic);
+						cmd.obj = topic;
+						sendCommand(cmd);
 					}
 					// Command
 				} while(!msg.equals("/exit"));

@@ -11,5 +11,7 @@ public enum CMDList {
 	SelectTopic,
 	ConfirmTopic,
 	
+	CreateTopic,
+	
 	Exit
 }
