@@ -1,4 +1,3 @@
-bio
-phy
-math
-chem
+Bio
+Chem
+Math
