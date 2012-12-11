@@ -30,7 +30,7 @@ public class ChatServer {
 		this.users.remove(user);
 	}
 	
-	public void broadcast(User user, String str) {
+	public void broadcast(User user, String msg) {
 		for(User u: users) {
 			
 			//ignore sender
@@ -41,11 +41,8 @@ public class ChatServer {
 			int topic = user.getTopic();
 			if(topic != u.getTopic()) continue;
 			
-			System.out.println(u);
-			
 			//send to other
 			Command cmd = new Command(CMDList.ReceiveMessage);
-			String msg = u.getName() + ": " + str;
 			System.out.println(msg);
 			cmd.setObject(msg);
 			sendCommand(cmd, s);
@@ -65,6 +62,7 @@ public class ChatServer {
 	}
 	
 	public void run() {
+		System.out.println("Server Up ! Listening for Clients in port 9999");
 		try {
 			for(;;) {
 			

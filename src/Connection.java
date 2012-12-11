@@ -8,7 +8,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class Connection implements Runnable {
@@ -122,9 +125,28 @@ public class Connection implements Runnable {
 	}
 	
 	public void parseMessage(String message) {
+		String username = user.getName();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String now = dateFormat.format(new Date());
+		
+		// Message
+		String msg = "[" + now + "] " + username + ": " + message;
+		
 		// boardCast message
-		chatServer.broadcast(user, message);
+		chatServer.broadcast(user, msg);
 		// TODO: Record in File
+		writeMessageToTopicFile(msg);
+	}
+	
+	public void writeMessageToTopicFile(String message) {
+		String topicFileName = String.valueOf(user.getTopic()) + ".txt";
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(topicFileName, true));
+			writer.write(message);
+			writer.newLine();
+			writer.close();
+		} catch(Exception ex) {
+		}
 	}
 	
 	public void sendCommand(Command cmd) {
