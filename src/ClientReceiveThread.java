@@ -34,7 +34,10 @@ public class ClientReceiveThread implements Runnable{
 	
 	public void parseCommand(Command command) {
 		CMDList cmd = command.cmd;
-		if( cmd == CMDList.ReceiveTopics ) {
+		if( cmd == CMDList.AuthConfirmation) {
+			chatClient.receiveLoginConfirm(command);
+		}
+		else if( cmd == CMDList.ReceiveTopics ) {
 			chatClient.receiveTopics(command);
 		}
 		else if (cmd == CMDList.ConfirmTopic) {

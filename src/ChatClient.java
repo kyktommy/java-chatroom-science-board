@@ -24,24 +24,44 @@ public class ChatClient {
 	}
 
 	public void run() {
-		promptID();
-		fetchTopic();
+		// Connect Server
+		connectToServer("127.0.0.1");
 		receiveMessage();
+		promptID();
 	}
 	
 	public void promptID() {
-//		// Input username
-//		println( "Username >" );
-//		username = scanner.nextLine();
-//		println( "Password >" );
-//		username = scanner.nextLine();
+		// Input username
+		println( "Username:" );
+		username = scanner.nextLine();
+		println( "Password:" );
+		password = scanner.nextLine();
+		
+		// Send them to server
+		Command cmd = new Command(CMDList.SendUsernameAndPassword);
+		ArrayList<String> info = new ArrayList<String>(2);
+		info.add(username);
+		info.add(password);
+		cmd.setObject(info);
+		sendCommand(cmd);
+		
+		// wait to Receive Confirm
+	}
+	
+	public void receiveLoginConfirm(Command cmd) {
+		Boolean success = (Boolean)cmd.getObject();
+		if( success ) { 
+			fetchTopic();
+		} else {
+			// fail login
+			println("Wrong username or password");
+			promptID();
+		}
 	}
 	
 	public void fetchTopic() {
 		println( "Welcome " + this.username );
 		println( "Select topics: " );
-		// Connect Server
-		connectToServer("127.0.0.1");
 		// Get topics
 		getTopics();
 	}

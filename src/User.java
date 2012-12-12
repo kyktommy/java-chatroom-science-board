@@ -5,7 +5,7 @@ public class User {
 	private Socket socket;
 	private String name;
 	private int currentTopic;
-	
+
 	public int getTopic() {
 		return currentTopic;
 	}

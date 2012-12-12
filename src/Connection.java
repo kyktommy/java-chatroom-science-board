@@ -18,6 +18,7 @@ public class Connection implements Runnable {
 	
 	// Constants
 	public final String TOPIC_FILE = "topics.txt";
+	public final String USER_FILE = "users.txt";
 	
 	// Variable
 	User user;
@@ -97,7 +98,18 @@ public class Connection implements Runnable {
 		Boolean exit = false;
 		CMDList cmd = command.cmd;
 		
-		if(cmd == CMDList.GetTopics) {
+		if(cmd == CMDList.SendUsernameAndPassword) {
+			// auth
+			ArrayList<String> info = (ArrayList<String>)command.getObject();
+			String username = info.get(0);
+			String password = info.get(1);
+			
+			Boolean success = auth(username, password);
+			Command sendCmd = new Command(CMDList.AuthConfirmation);
+			sendCmd.setObject(success);
+			sendCommand(sendCmd);
+		}
+		else if(cmd == CMDList.GetTopics) {
 			// return topics
 			Command sendCmd = new Command(CMDList.ReceiveTopics);
 			sendCmd.setObject(topics);
@@ -124,6 +136,29 @@ public class Connection implements Runnable {
 		return exit;
 	}
 	
+	private Boolean auth(String username, String password) {
+		// check if username is inside the users list and matched password
+		String line = null;
+		Boolean success = false;
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(USER_FILE));
+			while((line = reader.readLine()) != null) {
+				// check
+				String name = line.split(" ")[0];
+				String pw = line.split(" ")[1];
+				println(name + " " + pw);
+				println(username + " " + password);
+				if( name.equals(username.trim()) && pw.equals(password.trim()) ) {
+					success = true;
+					user.setName(username);
+				}
+			}
+		} catch (Exception e) {
+			
+		}
+		return success;
+	}
+
 	public void parseMessage(String message) {
 		String username = user.getName();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

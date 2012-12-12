@@ -74,9 +74,6 @@ public class ChatServer {
 				//new connection
 				this.addUser(user);
 				
-//				String clientInfo;
-//				clientInfo = socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
-				
 				//create new thread for new socket
 				Connection connection = new Connection(user, this);
 				Thread thread = new Thread(connection);
