@@ -5,6 +5,15 @@ public class User {
 	private Socket socket;
 	private String name;
 	private int currentTopic;
+	private Boolean createdTopic;
+
+	public Boolean getCreatedTopic() {
+		return createdTopic;
+	}
+
+	public void setCreatedTopic(Boolean createdTopic) {
+		this.createdTopic = createdTopic;
+	}
 
 	public int getTopic() {
 		return currentTopic;

@@ -128,7 +128,19 @@ public class Connection implements Runnable {
 		}
 		else if( cmd == CMDList.CreateTopic) {
 			String topic = (String)command.getObject();
-			addTopicToFile(topic);
+			String msg = "";
+			if(! user.getCreatedTopic() ) {
+				// create topic
+				addTopicToFile(topic);
+				user.setCreatedTopic(true);
+				changeUserCreatedTopic();
+				msg = "Successful created";
+			} else {
+				msg = "you can only create one topic";
+			}
+			Command sendCmd = new Command(CMDList.ReceiveMessage);
+			sendCmd.setObject(msg);
+			sendCommand(sendCmd);
 		}
 		else if( cmd == CMDList.Exit ) {
 			exit = true;
@@ -136,6 +148,36 @@ public class Connection implements Runnable {
 		return exit;
 	}
 	
+	private void changeUserCreatedTopic() {
+		String line = null;
+		ArrayList<String> users = new ArrayList<String>();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(USER_FILE));
+			while((line = reader.readLine()) != null) {
+				String[] info = line.split(" ");
+				if( user.getName().equals(info[0].trim()) ) {
+					line = info[0] + " " + info[1] + " true";
+				}
+				users.add(line); // add all line
+			}
+			reader.close();
+		}catch(Exception e) {
+			
+		}
+		
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(USER_FILE));
+			for(String user : users) {
+				writer.write(user);
+				writer.newLine();
+			}
+			writer.close();
+		}catch(Exception e) {
+			
+		}
+		
+	}
+
 	private Boolean auth(String username, String password) {
 		// check if username is inside the users list and matched password
 		String line = null;
@@ -144,13 +186,18 @@ public class Connection implements Runnable {
 			BufferedReader reader = new BufferedReader(new FileReader(USER_FILE));
 			while((line = reader.readLine()) != null) {
 				// check
-				String name = line.split(" ")[0];
-				String pw = line.split(" ")[1];
+				String[] info = line.split(" ");
+				String name = info[0];
+				String pw = info[1];
 				println(name + " " + pw);
 				println(username + " " + password);
 				if( name.equals(username.trim()) && pw.equals(password.trim()) ) {
 					success = true;
+					
+					// set user info
 					user.setName(username);
+					String haveTopic = info[2];
+					user.setCreatedTopic(Boolean.valueOf(haveTopic));
 				}
 			}
 		} catch (Exception e) {
