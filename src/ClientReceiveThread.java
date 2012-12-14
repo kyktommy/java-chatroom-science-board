@@ -41,7 +41,7 @@ public class ClientReceiveThread implements Runnable{
 			chatClient.receiveTopics(command);
 		}
 		else if (cmd == CMDList.ConfirmTopic) {
-			chatClient.confirmTopic();
+			chatClient.confirmTopic(command);
 		}
 		else if (cmd == CMDList.ReceiveMessage) {
 			chatClient.receiveMessage(command);

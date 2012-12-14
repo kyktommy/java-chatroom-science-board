@@ -171,8 +171,17 @@ public class ChatClient {
 		
 	}
 	
-	public void confirmTopic() {
+	public void confirmTopic(Command command) {
 		println("Joined topic");
+		println("Previous Comments");
+		Object obj = command.getObject();
+		if(obj != null) {
+			ArrayList<String> comments = (ArrayList<String>)obj;
+			for(String c : comments) {
+				println(c);
+			}
+		}
+		println("end previous comments");
 		messageLoop();
 	}
 	

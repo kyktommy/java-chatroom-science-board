@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -120,6 +121,8 @@ public class Connection implements Runnable {
 			topic = (Integer)command.getObject();
 			user.setTopic(topic);
 			Command sendCmd = new Command(CMDList.ConfirmTopic);
+			ArrayList<String> comments = getAllCommentsFromTopic(topic);
+			sendCmd.setObject(comments);
 			sendCommand(sendCmd);
 		}
 		else if( cmd == CMDList.SendMessage ) {
@@ -148,6 +151,24 @@ public class Connection implements Runnable {
 		return exit;
 	}
 	
+	private ArrayList<String> getAllCommentsFromTopic(int t) {
+		File file = new File(t + ".txt");
+		if(!file.exists()) return null;
+		
+		ArrayList<String> comments = new ArrayList<String>();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(t + ".txt"));
+			String line = null;
+			while((line = reader.readLine()) != null) {
+				comments.add(line);
+			}
+			reader.close();
+		} catch(Exception e) {
+			
+		}
+		return comments;
+	}
+
 	private void changeUserCreatedTopic() {
 		String line = null;
 		ArrayList<String> users = new ArrayList<String>();
@@ -189,8 +210,6 @@ public class Connection implements Runnable {
 				String[] info = line.split(" ");
 				String name = info[0];
 				String pw = info[1];
-				println(name + " " + pw);
-				println(username + " " + password);
 				if( name.equals(username.trim()) && pw.equals(password.trim()) ) {
 					success = true;
 					
